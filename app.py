@@ -162,16 +162,29 @@ def upload_tempfile():
         return "No file uploaded", 400
 
     image = Image.open(file.stream)
-    if image.mode not in ("RGB", "RGBA"):
-        image = image.convert("RGBA")
-    canvas = image.filter(ImageFilter.GaussianBlur(10))
+    logging.debug(f"Original image mode: {image.mode}, size: {image.size}")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-        tmp_path = tmp.name
-        canvas.save(tmp_path, format="PNG")
-    
+    # 画像処理
+    canvas = image.filter(ImageFilter.GaussianBlur(10))
+    logging.debug(f"Canvas mode after filter: {canvas.mode}, size: {canvas.size}")
+
+    # PNG保存時はRGBまたはRGBAが安全
+    if canvas.mode not in ("RGB", "RGBA"):
+        canvas = canvas.convert("RGBA")
+        logging.debug(f"Canvas converted mode: {canvas.mode}")
+
+    img_io = BytesIO()
+    try:
+        canvas.save(img_io, format='PNG')
+        img_io.seek(0)
+        img_size = len(img_io.getvalue())
+        logging.debug(f"BytesIO image size: {img_size} bytes")
+    except Exception as e:
+        logging.error(f"Failed to save image to BytesIO: {e}")
+        return "Image processing error", 500
+
     response = send_file(
-        tmp_path,
+        img_io,
         mimetype='image/png',
         as_attachment=False,
         download_name='processed.png'
