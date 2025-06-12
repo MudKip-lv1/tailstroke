@@ -1,16 +1,15 @@
-from flask import Flask, render_template, request, send_file, session, jsonify
-from PIL import Image, ImageFilter, ImageEnhance
 import os
+import logging
+import traceback
+from flask import Flask, render_template, request, send_file, session, jsonify
+from PIL import Image, ImageFilter, ImageEnhance, ExifTags
 import uuid
 import time
 import glob
 from datetime import timedelta
 import werkzeug
-from PIL import ExifTags
 import tempfile
 from io import BytesIO
-import logging
-import traceback
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション管理用
@@ -51,7 +50,6 @@ def upload():
 
         width = int(request.form.get('width', 800))
         height = int(request.form.get('height', 600))
-        # 追加: 出力形式の取得（デフォルトはjpg）
         output_format = request.form.get('format', 'jpg').lower()
         allowed_ext = {'jpg', 'jpeg', 'png', 'gif', 'bmp'}
         allowed_formats = {'jpg', 'jpeg', 'png', 'webp'}
@@ -146,7 +144,6 @@ def upload():
 
 @app.route('/cleanup', methods=['POST'])
 def cleanup():
-    # セッションのtmp_filesを削除
     for fname in session.get('tmp_files', []):
         fpath = os.path.join(TMP_DIR, fname)
         if os.path.exists(fpath):
@@ -158,35 +155,27 @@ def cleanup():
     session.modified = True
     return '', 204
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload_tempfile', methods=['POST'])
 def upload_tempfile():
     file = request.files['image']
     if not file:
         return "No file uploaded", 400
 
-    # 画像を開く
     image = Image.open(file.stream)
-    # 必要ならモード変換（PNGはRGBAまたはRGBが安全）
     if image.mode not in ("RGB", "RGBA"):
         image = image.convert("RGBA")
-
-    # 画像処理（例：ぼかし）
     canvas = image.filter(ImageFilter.GaussianBlur(10))
 
-    # 一時ファイルにPNGで保存
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
         tmp_path = tmp.name
-        # Pillowはファイル名で保存する場合、バイナリモードで開かれている必要がある
         canvas.save(tmp_path, format="PNG")
     
-    # ファイルを返却し、レスポンス後に削除
     response = send_file(
         tmp_path,
         mimetype='image/png',
         as_attachment=False,
         download_name='processed.png'
     )
-    # レスポンス後に一時ファイルを削除するためのフック
     @response.call_on_close
     def cleanup():
         try:
@@ -196,4 +185,11 @@ def upload_tempfile():
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    host = "0.0.0.0"
+    # ルート一覧をログ出力
+    with app.app_context():
+        logging.info("📌 Available routes:")
+        for rule in app.url_map.iter_rules():
+            logging.info(f"  {rule}")
+    app.run(host=host, port=port)
