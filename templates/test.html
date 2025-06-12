@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Tailstroke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card-bg: #fff;
+      --primary: #0071e3;
+      --primary-dark: #005bb5;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      text-align: center;
+      padding: 4em 2em 2em;
+    }
+
+    .header h1 {
+      font-size: 2.4em;
+      font-weight: 600;
+      margin-bottom: 0.3em;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 1.05em;
+    }
+
+    .card {
+      background: var(--card-bg);
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2.5em 2em;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+    }
+
+    label {
+      font-weight: 500;
+      font-size: 0.95em;
+      margin-bottom: 0.3em;
+    }
+
+    input[type="file"],
+    input[type="number"] {
+      padding: 0.7em;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      padding: 0.9em;
+      border-radius: 12px;
+      font-size: 1.05em;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--primary-dark);
+      transform: scale(1.02);
+    }
+
+    #preview-list {
+      max-width: none;
+      width: 100vw;
+      min-height: 260px;
+      margin: 2em 0 0 0;
+      padding: 1.5em 0 1.5em 2vw;
+      display: flex;
+      flex-direction: row;
+      gap: 1.5em;
+      overflow-x: auto;
+      overflow-y: hidden;
+      background: linear-gradient(90deg, #f5f5f7 80%, #e9e9ee 100%);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+      border-radius: 18px 0 0 18px;
+      scrollbar-width: thin;
+      scrollbar-color: #b0b0b5 #f5f5f7;
+    }
+    #preview-list::-webkit-scrollbar {
+      height: 10px;
+      background: #f5f5f7;
+      border-radius: 8px;
+    }
+    #preview-list::-webkit-scrollbar-thumb {
+      background: #b0b0b5;
+      border-radius: 8px;
+    }
+
+    .preview-item {
+      background: rgba(255,255,255,0.85);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.03);
+      padding: 1.2em 1.2em 1em 1.2em;
+      text-align: center;
+      width: 220px;
+      min-width: 220px;
+      position: relative;
+      transition: box-shadow 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(2px);
+    }
+    .preview-item img {
+      max-width: 180px;
+      max-height: 140px;
+      border-radius: 12px;
+      margin-bottom: 0.7em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      background: #f5f5f7;
+      transition: box-shadow 0.2s;
+    }
+    .preview-item:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      transform: translateY(-4px) scale(1.03);
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 0.5em;
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.2em;
+      font-size: 0.98em;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .download-btn:hover {
+      background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    }
+    @media (max-width: 700px) {
+      #preview-list {
+        min-height: 180px;
+        padding-left: 1vw;
+        gap: 0.7em;
+      }
+      .preview-item {
+        width: 120px;
+        min-width: 120px;
+        padding: 0.7em 0.5em 0.7em 0.5em;
+      }
+      .preview-item img {
+        max-width: 90px;
+        max-height: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Tailstroke</h1>
+    <p>Image editing, reimagined.</p>
+  </div>
+
+  <div class="card">
+    <form action="#" method="post" enctype="multipart/form-data" id="blur-form">
+      <div>
+        <label for="image">
+          画像を選択（複数可・ドラッグ＆ドロップ対応）<br>
+          <span style="color:var(--muted); font-size:0.95em;">
+            対応ファイル形式: jpg, jpeg, png, gif, bmp
+          </span>
+        </label>
+        <div id="drop-area" style="border:2px dashed #0071e3; border-radius:10px; padding:20px; text-align:center; margin-bottom:10px; background:#f8fafd;">
+          <span id="drop-text">ここに画像をドラッグ＆ドロップ</span><br>
+          <input id="image" type="file" name="image" accept="image/*" multiple required style="display:none;">
+          <button type="button" id="file-select-btn" style="margin-top:10px;">ファイルを選択</button>
+        </div>
+        <!-- 画像プレビュー -->
+        <div id="preview-container" style="margin-top:10px;">
+          <!-- 選択画像のプレビューをここに表示 -->
+        </div>
+      </div>
+      <div>
+        <label for="width">出力幅（px）</label>
+        <input id="width" type="number" name="width" min="100" max="4000" value="800" required>
+      </div>
+      <div>
+        <label for="height">出力高さ（px）</label>
+        <input id="height" type="number" name="height" min="100" max="4000" value="600" required>
+      </div>
+      <div>
+        <label for="format">出力形式</label>
+        <select id="format" name="format">
+          <option value="jpg">JPG</option>
+          <option value="png">PNG</option>
+        </select>
+      </div>
+      <button type="submit" id="submit-btn">加工</button>
+      <div id="status" style="margin-top:10px; color:var(--muted); font-size:0.95em;"></div>
+    </form>
+  </div>
+
+  <!-- 加工後の画像プレビューリスト -->
+  <div id="preview-list"></div>
+  <div style="width:100vw; text-align:right; margin: 1em 2vw 2em 0;">
+    <button id="download-selected-btn" class="download-btn" style="display:none;">選択した画像を一括ダウンロード</button>
+  </div>
+
+  <script>
+    // ドラッグ＆ドロップ対応
+    const dropArea = document.getElementById('drop-area');
+    const fileInput = document.getElementById('image');
+    const fileSelectBtn = document.getElementById('file-select-btn');
+    let droppedFiles = [];
+
+    // ファイル選択ボタンでinputを開く
+    fileSelectBtn.addEventListener('click', () => fileInput.click());
+
+    // inputで選択されたファイルもdroppedFilesに反映
+    fileInput.addEventListener('change', function(e) {
+      droppedFiles = Array.from(e.target.files);
+      updatePreview();
+    });
+
+    // ドラッグオーバー時のスタイル
+    dropArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropArea.style.background = "#e3f0fc";
+    });
+    dropArea.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      dropArea.style.background = "#f8fafd";
+    });
+
+    // ドロップ時の処理
+    dropArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropArea.style.background = "#f8fafd";
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+      if (files.length > 0) {
+        droppedFiles = files;
+        fileInput.value = ""; // inputの値をリセット（同じファイルを再度選択できるように）
+        updatePreview();
+      }
+    });
+
+    // 一括ダウンロード用にURLとファイル名を保持
+    let processedImagesMeta = [];
+
+    // プレビュー表示（チェックボックス付き）
+    function updatePreview() {
+      const container = document.getElementById('preview-container');
+      container.innerHTML = '';
+      for (let i = 0; i < droppedFiles.length; i++) {
+        const file = droppedFiles[i];
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(ev) {
+            const img = document.createElement('img');
+            img.src = ev.target.result;
+            img.style.maxWidth = '120px';
+            img.style.marginRight = '8px';
+            img.style.borderRadius = '8px';
+            container.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+    }
+
+    // フォーム送信時
+    document.getElementById('blur-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const status = document.getElementById('status');
+      const submitBtn = document.getElementById('submit-btn');
+      status.textContent = 'アップロード中...';
+      submitBtn.disabled = true;
+
+      const width = document.getElementById('width').value;
+      const height = document.getElementById('height').value;
+      const format = document.getElementById('format').value;
+      const previewList = document.getElementById('preview-list');
+      const downloadSelectedBtn = document.getElementById('download-selected-btn');
+
+      if (!window.processedImages) window.processedImages = [];
+      processedImagesMeta = [];
+      previewList.innerHTML = '';
+
+      for (let i = 0; i < droppedFiles.length; i++) {
+        const formData = new FormData();
+        formData.append('image', droppedFiles[i]);
+        formData.append('width', width);
+        formData.append('height', height);
+        formData.append('format', format);
+
+        try {
+          const res = await fetch('/upload', {
+            method: 'POST',
+            body: formData
+          });
+          if (!res.ok) throw new Error(await res.text());
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+
+          // プレビュー表示（チェックボックス付き）
+          const div = document.createElement('div');
+          div.className = 'preview-item';
+
+          // チェックボックス
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.className = 'preview-checkbox';
+          checkbox.style.marginBottom = '0.5em';
+          checkbox.style.transform = 'scale(1.3)';
+          checkbox.checked = true;
+
+          // 画像
+          const img = document.createElement('img');
+          img.src = url;
+          img.alt = '加工済み画像';
+
+          // ダウンロードボタン
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = droppedFiles[i].name.replace(/\.[^/.]+$/, '') + '_blurred.' + format;
+          a.textContent = 'ダウンロード';
+          a.className = 'download-btn';
+
+          div.appendChild(checkbox);
+          div.appendChild(img);
+          div.appendChild(document.createElement('br'));
+          div.appendChild(a);
+          previewList.appendChild(div);
+
+          // 一括ダウンロード用に情報を保存
+          processedImagesMeta.push({
+            url: url,
+            filename: a.download,
+            checkbox: checkbox
+          });
+
+          window.processedImages.push(url);
+
+        } catch (err) {
+          const div = document.createElement('div');
+          div.className = 'preview-item';
+          div.textContent = 'エラー: ' + err.message;
+          previewList.appendChild(div);
+        }
+      }
+      status.textContent = '完了しました。';
+      submitBtn.disabled = false;
+
+      // 一括ダウンロードボタン表示
+      if (processedImagesMeta.length > 0) {
+        downloadSelectedBtn.style.display = '';
+      }
+    });
+
+    // 一括ダウンロード処理
+    document.getElementById('download-selected-btn').addEventListener('click', async function() {
+      // 選択された画像だけ
+      const selected = processedImagesMeta.filter(meta => meta.checkbox.checked);
+      if (selected.length === 0) {
+        alert('ダウンロードする画像を選択してください。');
+        return;
+      }
+      // 1つだけならそのままダウンロード
+      if (selected.length === 1) {
+        const a = document.createElement('a');
+        a.href = selected[0].url;
+        a.download = selected[0].filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        return;
+      }
+      // 複数ならzipでダウンロード
+      const JSZipScript = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+      if (typeof JSZip === 'undefined') {
+        await new Promise(resolve => {
+          const script = document.createElement('script');
+          script.src = JSZipScript;
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+      }
+      const zip = new JSZip();
+      for (const meta of selected) {
+        const response = await fetch(meta.url);
+        const blob = await response.blob();
+        zip.file(meta.filename, blob);
+      }
+      const content = await zip.generateAsync({type:"blob"});
+      const zipUrl = URL.createObjectURL(content);
+      const a = document.createElement('a');
+      a.href = zipUrl;
+      a.download = 'blurred_images.zip';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(zipUrl);
+    });
+
+    // ページリロード時にプレビューリストをリセット
+    window.addEventListener('pageshow', function() {
+      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('status').textContent = '';
+      document.getElementById('preview-list').innerHTML = '';
+      document.getElementById('download-selected-btn').style.display = 'none';
+      window.processedImages = [];
+      processedImagesMeta = [];
+      droppedFiles = [];
+      updatePreview();
+    });
+  </script>
+
+  <footer>
+    &copy; 2025 Aaron Studio. All rights reserved.
+  </footer>
+</body>
+</html>
