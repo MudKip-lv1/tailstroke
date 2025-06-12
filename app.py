@@ -9,6 +9,8 @@ import werkzeug
 from PIL import ExifTags
 import tempfile
 from io import BytesIO
+import logging
+import traceback
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション管理用
@@ -17,6 +19,9 @@ os.makedirs(TMP_DIR, exist_ok=True)
 
 # セッションの有効期限
 app.permanent_session_lifetime = timedelta(hours=1)
+
+# 詳細なログを出力
+logging.basicConfig(level=logging.DEBUG)
 
 def cleanup_tmp_dir(expire_sec=1800):
     """30分以上前のファイルを削除"""
@@ -135,8 +140,8 @@ def upload():
         cleanup_tmp_dir()
         return jsonify(results)
     except Exception as e:
-        import traceback
-        traceback.print_exc()
+        logging.error("Exception occurred during upload:")
+        logging.error(traceback.format_exc())
         return f"エラーが発生しました: {e}", 500
 
 @app.route('/cleanup', methods=['POST'])
