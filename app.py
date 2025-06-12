@@ -7,6 +7,7 @@ import glob
 from datetime import timedelta
 import werkzeug
 from PIL import ExifTags
+import tempfile
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション管理用
@@ -109,11 +110,11 @@ def upload():
                 output_ext = 'jpg'
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.{output_ext}"
                 output_path = os.path.join(TMP_DIR, output_filename)
-                canvas.save(output_path, format="JPEG", quality=95, optimize=True)
+                canvas.save(output_path, format="JPEG", quality=95)
             elif output_format == 'png':
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.png"
                 output_path = os.path.join(TMP_DIR, output_filename)
-                canvas.save(output_path, format="PNG", optimize=True)
+                canvas.save(output_path, format="PNG")
             elif output_format == 'webp':
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.webp"
                 output_path = os.path.join(TMP_DIR, output_filename)
@@ -150,6 +151,22 @@ def cleanup():
     session['tmp_files'] = []
     session.modified = True
     return '', 204
+
+@app.route('/upload', methods=['POST'])
+def upload_tempfile():
+    file = request.files['image']
+    if not file:
+        return "No file uploaded", 400
+
+    # 画像処理
+    image = Image.open(file.stream)
+    canvas = image.filter(ImageFilter.GaussianBlur(10))
+
+    # 一時ファイルに保存して返却
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+        canvas.save(tmp.name, format="PNG")
+        tmp.flush()
+        return send_file(tmp.name, mimetype='image/png')
 
 if __name__ == '__main__':
     app.run(debug=True)
