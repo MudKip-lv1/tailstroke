@@ -8,6 +8,7 @@ from datetime import timedelta
 import werkzeug
 from PIL import ExifTags
 import tempfile
+from io import BytesIO
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション管理用
@@ -158,15 +159,36 @@ def upload_tempfile():
     if not file:
         return "No file uploaded", 400
 
-    # 画像処理
+    # 画像を開く
     image = Image.open(file.stream)
+    # 必要ならモード変換（PNGはRGBAまたはRGBが安全）
+    if image.mode not in ("RGB", "RGBA"):
+        image = image.convert("RGBA")
+
+    # 画像処理（例：ぼかし）
     canvas = image.filter(ImageFilter.GaussianBlur(10))
 
-    # 一時ファイルに保存して返却
+    # 一時ファイルにPNGで保存
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-        canvas.save(tmp.name, format="PNG")
-        tmp.flush()
-        return send_file(tmp.name, mimetype='image/png')
+        tmp_path = tmp.name
+        # Pillowはファイル名で保存する場合、バイナリモードで開かれている必要がある
+        canvas.save(tmp_path, format="PNG")
+    
+    # ファイルを返却し、レスポンス後に削除
+    response = send_file(
+        tmp_path,
+        mimetype='image/png',
+        as_attachment=False,
+        download_name='processed.png'
+    )
+    # レスポンス後に一時ファイルを削除するためのフック
+    @response.call_on_close
+    def cleanup():
+        try:
+            os.remove(tmp_path)
+        except Exception:
+            pass
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
