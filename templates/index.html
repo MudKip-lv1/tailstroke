@@ -207,7 +207,7 @@
 
     .sample-area h2 {
       text-align: center;
-      font-size: 1.6em;
+      font-size: 1.1em;         /* タイトルを小さく */
       font-weight: 700;
       letter-spacing: -0.01em;
       margin-bottom: 2em;
@@ -217,7 +217,7 @@
     .sample-gallery {
       display: flex;
       flex-wrap: wrap;
-      gap: 2.5em;
+      gap: 3em;
       justify-content: center;
       align-items: stretch;
     }
@@ -226,23 +226,18 @@
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 4px 24px rgba(30, 34, 90, 0.07), 0 1.5px 4px rgba(0,0,0,0.03);
-      padding: 2em 2em 1.5em 2em;
+      padding: 3.6em 3.6em 2.7em 3.6em;   /* 1.8倍 */
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 270px;
-      max-width: 340px;
+      min-width: 486px;   /* 1.8倍 */
+      max-width: 612px;   /* 1.8倍 */
       transition: box-shadow 0.18s, transform 0.18s;
       margin-bottom: 0.5em;
     }
 
-    .sample-block:hover {
-      box-shadow: 0 8px 32px rgba(30, 34, 90, 0.16), 0 2px 8px rgba(0,0,0,0.06);
-      transform: translateY(-4px) scale(1.5);
-    }
-
     .sample-block h3 {
-      font-size: 1.08em;
+      font-size: 1.2em;
       font-weight: 600;
       margin-bottom: 1.2em;
       color: #0071e3;
@@ -251,7 +246,7 @@
 
     .sample-images {
       display: flex;
-      gap: 1.2em;
+      gap: 2.2em; /* 1.8倍 */
       justify-content: center;
       width: 100%;
     }
@@ -260,17 +255,17 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 150px;
-      max-width: 190px;
+      min-width: 270px;   /* 1.8倍 */
+      max-width: 342px;   /* 1.8倍 */
     }
 
     .sample-images img {
       width: 100%;
-      max-width: 140px;
+      max-width: 252px;   /* 1.8倍 */
       aspect-ratio: 4/3;
       object-fit: cover;
-      border-radius: 10px;
-      border: 1.5px solid #e9e9ee;
+      border-radius: 18px;
+      border: 2.7px solid #e9e9ee;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       background: #f5f5f7;
       transition: box-shadow 0.18s;
@@ -283,8 +278,8 @@
     }
 
     .sample-images p {
-      margin-top: 0.6em;
-      font-size: 0.98em;
+      margin-top: 1em;
+      font-size: 1.1em;
       font-weight: 500;
       color: #6e6e73;
       letter-spacing: 0.01em;
