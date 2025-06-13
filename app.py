@@ -56,8 +56,18 @@ def index():
 
     return render_template('index.html', sample_images=sample_images)
 
-@app.route('/upload', methods=['POST'])
+@app.route("/", methods=["POST"])
 def upload():
+    output_filename = None  # 事前に初期化
+    if request.method == "POST":
+        if request.files:
+            file = request.files.get("image")
+            if file:
+                output_filename = save_and_blur(file)
+    return render_template("index.html", output=output_filename)
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
     try:
         ensure_tmp_files()
         files = request.files.getlist('image')
