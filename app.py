@@ -166,10 +166,6 @@ def upload_file():
             else:
                 canvas.paste(img, (x, y))
 
-            # セッションに記録
-            ensure_tmp_files()
-            session['tmp_files'].append(output_filename)
-
             # 保存処理
             if output_format in ['jpg', 'jpeg']:
                 output_ext = 'jpg'
@@ -188,6 +184,10 @@ def upload_file():
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.{output_format}"
                 output_path = os.path.join(TMP_DIR, output_filename)
                 canvas.save(output_path)
+
+            # セッションに記録（ここでoutput_filenameが必ず定義済み）
+            ensure_tmp_files()
+            session['tmp_files'].append(output_filename)
 
             # クライアントに返す情報
             results.append({
