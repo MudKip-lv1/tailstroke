@@ -1,7 +1,7 @@
 import os
 import logging
 import traceback
-from flask import Flask, render_template, request, send_file, session, jsonify
+from flask import Flask, render_template, request, send_file, session, jsonify, flash
 from PIL import Image, ImageFilter, ImageEnhance, ExifTags
 import uuid
 import time
@@ -56,14 +56,44 @@ def index():
 
     return render_template('index.html', sample_images=sample_images)
 
-@app.route("/", methods=["POST"])
+@app.route("/", methods=["GET", "POST"])
 def upload():
-    output_filename = None  # 事前に初期化
+    output_filename = None  # ここで初期化
+
     if request.method == "POST":
-        if request.files:
-            file = request.files.get("image")
-            if file:
-                output_filename = save_and_blur(file)
+        if 'image' in request.files:
+            file = request.files["image"]
+            if file and file.filename != "":
+                # 画像処理と保存
+                ext = file.filename.rsplit('.', 1)[-1].lower()
+                allowed_ext = {'jpg', 'jpeg', 'png', 'gif', 'bmp'}
+                if ext not in allowed_ext:
+                    flash("対応していないファイル形式です。")
+                else:
+                    original_name = werkzeug.utils.secure_filename(file.filename.rsplit('.', 1)[0])
+                    img = Image.open(file)
+                    img = img.convert("RGB")
+                    width, height = 800, 600
+                    if img.width > width or img.height > height:
+                        img.thumbnail((width, height), Image.LANCZOS)
+                    bg = img.resize((width, height), Image.LANCZOS)
+                    bg = bg.filter(ImageFilter.GaussianBlur(radius=25))
+                    enhancer = ImageEnhance.Brightness(bg)
+                    bg = enhancer.enhance(0.5)
+                    x = (width - img.width) // 2
+                    y = (height - img.height) // 2
+                    canvas = bg.copy()
+                    canvas.paste(img, (x, y))
+                    output_filename = f"{original_name}_{uuid.uuid4().hex}.jpg"
+                    output_path = os.path.join(TMP_DIR, output_filename)
+                    canvas.save(output_path, format="JPEG", quality=95)
+                    ensure_tmp_files()
+                    session['tmp_files'].append(output_filename)
+            else:
+                flash("ファイルが選択されていません。")
+        else:
+            flash("画像ファイルがPOSTされていません。")
+
     return render_template("index.html", output=output_filename)
 
 @app.route('/upload', methods=['POST'])
