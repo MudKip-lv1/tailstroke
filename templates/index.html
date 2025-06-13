@@ -321,8 +321,22 @@
       previewList.innerHTML = '';
 
       for (let i = 0; i < droppedFiles.length; i++) {
+        const file = droppedFiles[i];
+
+        // 拡張子チェック（対応形式以外はスキップしてメッセージ表示）
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/bmp'];
+        if (!allowedTypes.includes(file.type)) {
+          const div = document.createElement('div');
+          div.className = 'preview-item';
+          div.style.color = '#ff4d4d';
+          div.innerHTML = `<strong>${file.name}</strong> は対応形式ではないため、処理されませんでした。`;
+          previewList.appendChild(div);
+          continue; // 処理スキップ
+        }
+
+        // ↓ここから下は今までの処理
         const formData = new FormData();
-        formData.append('image', droppedFiles[i]);
+        formData.append('image', file);
         formData.append('width', width);
         formData.append('height', height);
         formData.append('format', format);
@@ -333,7 +347,7 @@
             body: formData
           });
           if (!res.ok) throw new Error(await res.text());
-          const json = await res.json(); // ← JSON配列で受け取る
+          const json = await res.json();
 
           for (const result of json) {
             const url = result.url || result.preview_url || result.download_url;
@@ -376,7 +390,8 @@
         } catch (err) {
           const div = document.createElement('div');
           div.className = 'preview-item';
-          div.textContent = 'エラー: ' + err.message;
+          div.style.color = '#ff4d4d';
+          div.textContent = `エラー: ${err.message}`;
           previewList.appendChild(div);
         }
       }
