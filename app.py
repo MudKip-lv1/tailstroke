@@ -37,7 +37,21 @@ def index():
     session.permanent = True
     if 'tmp_files' not in session:
         session['tmp_files'] = []
-    return render_template('index.html')
+
+    sample_images = [
+        {
+            "title": "SAMPLE",
+            "before": "static/sample/sample.png",
+            "after": "static/sample/sample_975d6d172f794362b11e1199aca25450.jpg"
+        },
+        {
+            "title": "SAMPLE2",
+            "before": "static/sample/sample_2.png",
+            "after": "static/sample/sample_2_438f02d3183f4c00af756881401591cf.png"
+        }
+    ]
+
+    return render_template('index.html', sample_images=sample_images)
 
 @app.route('/upload', methods=['POST'])
 def upload():

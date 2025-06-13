@@ -229,12 +229,75 @@
       to { opacity: 1; transform: scale(1); }
     }
     /* === ここまで追加 === */
+
+    /* サンプルセクションのスタイル */
+    .sample-area {
+      padding: 2em 1em;
+      background: #f9f9f9;
+      text-align: center;
+    }
+
+    .sample-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 2em;
+      align-items: center;
+    }
+
+    .sample-block h3 {
+      font-size: 1.2em;
+      margin-bottom: 0.5em;
+    }
+
+    .sample-images {
+      display: flex;
+      gap: 1em;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .sample-images div {
+      max-width: 240px;
+    }
+
+    .sample-images img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .sample-images p {
+      margin-top: 0.5em;
+      font-weight: 500;
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>Tails</h1>
   </div>
+
+  <!-- サンプル Before/After セクション -->
+  <section class="sample-area">
+    <h2>Before / After サンプル</h2>
+    <div class="sample-gallery">
+      {% for sample in sample_images %}
+      <div class="sample-block">
+        <h3>{{ sample.title }}</h3>
+        <div class="sample-images">
+          <div>
+            <img src="{{ sample.before }}" alt="Before of {{ sample.title }}">
+            <p>Before</p>
+          </div>
+          <div>
+            <img src="{{ sample.after }}" alt="After of {{ sample.title }}">
+            <p>After</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
 
   <div class="card">
     <form action="#" method="post" enctype="multipart/form-data" id="blur-form">
