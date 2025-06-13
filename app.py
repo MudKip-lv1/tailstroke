@@ -101,7 +101,6 @@ def upload():
             x = (width - img.width) // 2
             y = (height - img.height) // 2
             canvas = bg.copy()
-            # PNGの場合はアルファチャンネルも考慮して合成
             if output_format == 'png':
                 img = img.convert("RGBA")
                 canvas = canvas.convert("RGBA")
@@ -109,7 +108,7 @@ def upload():
             else:
                 canvas.paste(img, (x, y))
 
-            # 保存
+            # 保存処理
             if output_format in ['jpg', 'jpeg']:
                 output_ext = 'jpg'
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.{output_ext}"
@@ -127,10 +126,15 @@ def upload():
                 output_filename = f"{original_name}_{uuid.uuid4().hex}.{output_format}"
                 output_path = os.path.join(TMP_DIR, output_filename)
                 canvas.save(output_path)
+
+            # セッションに記録
+            if 'tmp_files' not in session:
+                session['tmp_files'] = []
             session['tmp_files'].append(output_filename)
+
+            # クライアントに返す情報
             results.append({
-                "preview_url": f"/static/tmp/{output_filename}",
-                "download_url": f"/static/tmp/{output_filename}",
+                "url": f"/static/tmp/{output_filename}",
                 "filename": output_filename
             })
 
