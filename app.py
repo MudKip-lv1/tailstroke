@@ -191,10 +191,7 @@ def upload_tempfile():
     )
     @response.call_on_close
     def cleanup():
-        try:
-            os.remove(tmp_path)
-        except Exception:
-            pass
+        pass
     return response
 
 if __name__ == '__main__':
