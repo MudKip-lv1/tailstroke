@@ -32,11 +32,14 @@ def cleanup_tmp_dir(expire_sec=1800):
             except Exception:
                 pass
 
+def ensure_tmp_files():
+    if 'tmp_files' not in session:
+        session['tmp_files'] = []
+
 @app.route('/')
 def index():
     session.permanent = True
-    if 'tmp_files' not in session:
-        session['tmp_files'] = []
+    ensure_tmp_files()
 
     sample_images = [
         {
@@ -56,6 +59,7 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     try:
+        ensure_tmp_files()
         files = request.files.getlist('image')
         if not files or len(files) == 0:
             return "No file uploaded", 400
