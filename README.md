@@ -1,53 +1,75 @@
-# 🖌️ Tailstroke
+# Tails
 
-**Tailstroke** は、画像を美しくぼかして仕上げるWebベースの画像加工ツールです。  
-ノーコードで直感的に使えるインターフェースを備え、今後は多彩な画像編集機能の拡張も予定しています。
-
----
-
-## 🚀 Features
-
-- 🖼️ 最大10枚の画像を同時アップロード可能  
-- 🔧 出力サイズを自由に指定  
-- 💾 JPG / PNG形式でダウンロード対応  
-- ⚡ 一時保存（ブラウザリロードで削除）  
-- 🌐 Apple風のモダンでミニマルなUI  
+**Tails** is a web-based image processing tool that allows users to blur images beautifully and intuitively.  
+No coding skills required — it features a minimal, user-friendly interface. Future updates will include a wider range of image editing functions.
 
 ---
 
-## 🧪 ローカル環境での実行方法
+## Features
 
-### 1. 環境構築
+- Upload up to 10 images at once  
+- Customize output image size freely  
+- Supports downloading in JPG and PNG formats  
+- Temporary storage (cleared on browser reload)  
+- Minimal, modern UI inspired by Apple design  
+
+---
+
+## Run Locally
+
+### 1. Clone and Setup
 
 ```bash
 git clone https://github.com/your-username/tailstroke.git
 cd tailstroke
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. サーバー起動
+### 2. Start the Server
 
 ```bash
 python app.py
 ```
 
-ブラウザで以下にアクセス：  
-`http://127.0.0.1:5000`
+Open the browser and go to:
+
+```
+http://127.0.0.1:5000
+```
 
 ---
 
-## 🗂️ プロジェクト構成
+## Deploy to Render
+
+1. Go to [https://dashboard.render.com/](https://dashboard.render.com/)
+2. Click **New > Web Service**
+3. Connect your GitHub repository
+4. Set the following parameters:
+   - **Environment**: Python
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python app.py`
+   - **Runtime**: Python 3.x
+   - **Instance Type**: Free or Starter (depending on usage)
+5. In the **Advanced Settings**, add this environment variable:
+   - `PORT=10000` (or as needed)
+
+Once deployed, you'll get a public URL like `https://your-app-name.onrender.com`.
+
+---
+
+## Project Structure
 
 ```
 tailstroke/
-├── app.py                # Flaskアプリ本体
+├── app.py                # Main Flask app
 ├── templates/
-│   └── index.html        # フロントエンドUI
+│   └── index.html        # Frontend (Jinja2 template)
 ├── static/
-│   ├── style.css         # スタイリング
-│   └── tmp/              # 一時画像ファイル格納用
+│   ├── style.css         # CSS styling
+│   ├── sample/           # Before/After sample images
+│   └── tmp/              # Temporary upload folder
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -55,6 +77,6 @@ tailstroke/
 
 ---
 
-## 📄 ライセンス
+## License
 
 MIT License
