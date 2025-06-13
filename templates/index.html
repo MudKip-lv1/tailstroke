@@ -207,7 +207,7 @@
 
     .sample-area h2 {
       text-align: center;
-      font-size: 1.1em;         /* タイトルを小さく */
+      font-size: 1.1em;  /* 小さめに */
       font-weight: 700;
       letter-spacing: -0.01em;
       margin-bottom: 2em;
@@ -230,10 +230,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 486px;   /* 1.8倍 */
-      max-width: 612px;   /* 1.8倍 */
+      min-width: 486px;   /* 1.8倍の目安 */
+      max-width: 640px;
       transition: box-shadow 0.18s, transform 0.18s;
       margin-bottom: 0.5em;
+    }
+    .sample-block:hover {
+      box-shadow: 0 8px 32px rgba(30, 34, 90, 0.16), 0 2px 8px rgba(0,0,0,0.06);
+      transform: translateY(-4px) scale(1.03);
     }
 
     .sample-block h3 {
@@ -246,7 +250,7 @@
 
     .sample-images {
       display: flex;
-      gap: 2.2em; /* 1.8倍 */
+      gap: 2.2em;
       justify-content: center;
       width: 100%;
     }
@@ -255,13 +259,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 270px;   /* 1.8倍 */
-      max-width: 342px;   /* 1.8倍 */
+      min-width: 270px;
+      max-width: 342px;
     }
 
     .sample-images img {
       width: 100%;
-      max-width: 252px;   /* 1.8倍 */
+      max-width: 342px;
       aspect-ratio: 4/3;
       object-fit: cover;
       border-radius: 18px;
@@ -270,9 +274,8 @@
       background: #f5f5f7;
       transition: box-shadow 0.18s;
     }
-
-    .sample-images img:focus,
-    .sample-images img:hover {
+    .sample-images img:hover,
+    .sample-images img:focus {
       box-shadow: 0 4px 16px rgba(0,113,227,0.13);
       outline: none;
     }
