@@ -126,6 +126,10 @@ def upload():
             else:
                 canvas.paste(img, (x, y))
 
+            # セッションに記録
+            ensure_tmp_files()
+            session['tmp_files'].append(output_filename)
+
             # 保存処理
             if output_format in ['jpg', 'jpeg']:
                 output_ext = 'jpg'
@@ -145,11 +149,6 @@ def upload():
                 output_path = os.path.join(TMP_DIR, output_filename)
                 canvas.save(output_path)
 
-            # セッションに記録
-            if 'tmp_files' not in session:
-                session['tmp_files'] = []
-            session['tmp_files'].append(output_filename)
-
             # クライアントに返す情報
             results.append({
                 "url": f"/static/tmp/{output_filename}",
@@ -166,6 +165,7 @@ def upload():
 
 @app.route('/cleanup', methods=['POST'])
 def cleanup():
+    ensure_tmp_files()
     for fname in session.get('tmp_files', []):
         fpath = os.path.join(TMP_DIR, fname)
         if os.path.exists(fpath):
