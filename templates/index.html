@@ -382,11 +382,11 @@
         <h3>{{ sample.title }}</h3>
         <div class="sample-images">
           <div>
-            <img src="{{ url_for('static', filename=sample.before.split('static/')[1]) }}" alt="Before of {{ sample.title }}">
+            <img src="{{ url_for('static', filename=sample.before) }}" alt="Before of {{ sample.title }}">
             <p>Before</p>
           </div>
           <div>
-            <img src="{{ url_for('static', filename=sample.after.split('static/')[1]) }}" alt="After of {{ sample.title }}">
+            <img src="{{ url_for('static', filename=sample.after) }}" alt="After of {{ sample.title }}">
             <p>After</p>
           </div>
         </div>
