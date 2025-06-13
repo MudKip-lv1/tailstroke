@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Tailstroke</title>
+  <title>Tails</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -13,6 +13,8 @@
       --primary-dark: #005bb5;
       --text: #1d1d1f;
       --muted: #6e6e73;
+      --gray-light: #e9e9ee;
+      --gray-dark: #b0b0b5;
     }
 
     * {
@@ -25,125 +27,129 @@
       color: var(--text);
       margin: 0;
       padding: 0;
+      font-size: 1.12em; /* 視認性UP */
+      letter-spacing: 0.01em;
+      line-height: 1.7;
     }
 
     .header {
       text-align: center;
-      padding: 4em 2em 2em;
+      padding: 5em 2em 2.5em;
+      margin-bottom: 1.5em;
     }
 
     .header h1 {
-      font-size: 2.4em;
-      font-weight: 600;
-      margin-bottom: 0.3em;
-      letter-spacing: -0.02em;
-    }
-
-    .header p {
-      color: var(--muted);
-      font-size: 1.05em;
+      font-size: 2.7em;
+      font-weight: 700;
+      margin-bottom: 0.2em;
+      letter-spacing: -0.01em;
     }
 
     .card {
       background: var(--card-bg);
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 2.5em 2em;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      max-width: 650px;
+      margin: 0 auto 2.5em auto;
+      padding: 3em 2.2em 2.2em 2.2em;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
       transition: box-shadow 0.3s ease;
     }
 
     .card:hover {
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.09);
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.2em;
+      gap: 1.5em;
     }
 
     label {
-      font-weight: 500;
-      font-size: 0.95em;
-      margin-bottom: 0.3em;
+      font-weight: 600;
+      font-size: 1.08em;
+      margin-bottom: 0.4em;
+      letter-spacing: 0.01em;
     }
 
     input[type="file"],
     input[type="number"] {
-      padding: 0.7em;
-      font-size: 1em;
-      border: 1px solid #ccc;
+      padding: 0.8em;
+      font-size: 1.08em;
+      border: 1px solid var(--gray-light);
       border-radius: 10px;
+      margin-top: 0.2em;
     }
 
     button {
       background-color: var(--primary);
       color: #fff;
       border: none;
-      font-weight: 600;
-      padding: 0.9em;
-      border-radius: 12px;
-      font-size: 1.05em;
+      font-weight: 700;
+      padding: 1em;
+      border-radius: 14px;
+      font-size: 1.08em;
       cursor: pointer;
       transition: background-color 0.2s ease, transform 0.2s ease;
+      margin-top: 0.7em;
+      letter-spacing: 0.01em;
     }
 
     button:hover {
       background-color: var(--primary-dark);
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
 
     #preview-list {
       max-width: none;
       width: 100vw;
       min-height: 260px;
-      margin: 2em 0 0 0;
-      padding: 1.5em 0 1.5em 2vw;
+      margin: 2.5em 0 0 0;
+      padding: 2em 0 2em 2vw;
       display: flex;
       flex-direction: row;
-      gap: 1.5em;
+      gap: 2em;
       overflow-x: auto;
       overflow-y: hidden;
-      background: linear-gradient(90deg, #f5f5f7 80%, #e9e9ee 100%);
+      background: linear-gradient(90deg, #f5f5f7 80%, var(--gray-light) 100%);
       box-shadow: 0 2px 16px rgba(0,0,0,0.04);
-      border-radius: 18px 0 0 18px;
+      border-radius: 20px 0 0 20px;
       scrollbar-width: thin;
-      scrollbar-color: #b0b0b5 #f5f5f7;
+      scrollbar-color: var(--gray-dark) var(--bg);
     }
     #preview-list::-webkit-scrollbar {
       height: 10px;
-      background: #f5f5f7;
+      background: var(--bg);
       border-radius: 8px;
     }
     #preview-list::-webkit-scrollbar-thumb {
-      background: #b0b0b5;
+      background: var(--gray-dark);
       border-radius: 8px;
     }
 
     .preview-item {
-      background: rgba(255,255,255,0.85);
-      border-radius: 18px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.03);
-      padding: 1.2em 1.2em 1em 1.2em;
+      background: rgba(255,255,255,0.92);
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05), 0 1.5px 4px rgba(0,0,0,0.02);
+      padding: 1.5em 1.5em 1.1em 1.5em;
       text-align: center;
-      width: 220px;
-      min-width: 220px;
+      width: 230px;
+      min-width: 230px;
       position: relative;
       transition: box-shadow 0.2s, transform 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
       backdrop-filter: blur(2px);
+      margin-bottom: 0.5em;
     }
     .preview-item img {
-      max-width: 180px;
-      max-height: 140px;
-      border-radius: 12px;
-      margin-bottom: 0.7em;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      background: #f5f5f7;
+      max-width: 190px;
+      max-height: 150px;
+      border-radius: 13px;
+      margin-bottom: 0.8em;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      background: var(--bg);
       transition: box-shadow 0.2s;
     }
     .preview-item:hover {
@@ -152,27 +158,27 @@
     }
     .download-btn {
       display: inline-block;
-      margin-top: 0.5em;
+      margin-top: 0.7em;
       background: linear-gradient(90deg, var(--primary), var(--primary-dark));
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 0.5em 1.2em;
-      font-size: 0.98em;
+      border-radius: 10px;
+      padding: 0.6em 1.3em;
+      font-size: 1em;
       cursor: pointer;
       text-decoration: none;
       font-weight: 600;
       letter-spacing: 0.01em;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
       transition: background 0.2s, box-shadow 0.2s;
     }
     .download-btn:hover {
       background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.09);
     }
     @media (max-width: 700px) {
       #preview-list {
-        min-height: 180px;
+        min-height: 140px;
         padding-left: 1vw;
         gap: 0.7em;
       }
@@ -184,6 +190,12 @@
       .preview-item img {
         max-width: 90px;
         max-height: 70px;
+      }
+      .card {
+        padding: 1.2em 0.5em;
+      }
+      .header {
+        padding: 2.5em 1em 1.2em;
       }
     }
   </style>
