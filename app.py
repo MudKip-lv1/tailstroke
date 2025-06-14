@@ -11,6 +11,11 @@ import werkzeug
 import tempfile
 from io import BytesIO
 
+from dotenv import load_dotenv  # 追加
+
+# .envファイルから環境変数を読み込む
+load_dotenv()
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション管理用
 TMP_DIR = os.path.join('static', 'tmp')
@@ -21,6 +26,9 @@ app.permanent_session_lifetime = timedelta(hours=1)
 
 # 詳細なログを出力
 logging.basicConfig(level=logging.DEBUG)
+
+# GA測定IDを環境変数から取得
+GA_MEASUREMENT_ID = os.environ.get("GA_MEASUREMENT_ID", "")
 
 def cleanup_tmp_dir(expire_sec=1800):
     """30分以上前のファイルを削除"""
@@ -38,6 +46,7 @@ def ensure_tmp_files():
 
 @app.route('/')
 def index():
+    
     session.permanent = True
     ensure_tmp_files()
 
@@ -54,7 +63,7 @@ def index():
         }
     ]
 
-    return render_template('index.html', sample_images=sample_images)
+    return render_template('index.html', sample_images=sample_images, ga_id=GA_MEASUREMENT_ID)
 
 @app.route("/", methods=["GET", "POST"])
 def upload():
@@ -94,7 +103,7 @@ def upload():
         else:
             flash("画像ファイルがPOSTされていません。")
 
-    return render_template("index.html", output=output_filename)
+    return render_template("index.html", output=output_filename, ga_id=GA_MEASUREMENT_ID)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
